@@ -1,0 +1,82 @@
+<%- include('partials/header'); -%>
+
+<ul class="recipes">
+<%for (var i = 0; i < recipe.length; i++) {%>
+    <li class="recipe id-class-<%= recipe[i]._id %>" >
+      <button type="submit" class="delete js-delete-button" data-doc="<%= recipe[i]._id %>">delete</button>
+      <img src="/JoyBread.jpg" alt="smoothie recipe icon">
+      <p><%= recipe[i].recipe_name %></p>
+      <input type="number" placeholder="1" id="<%= recipe[i]._id %>" value = 1>
+      <button class="amountButton" data-id="<%= recipe[i]._id%>">Calculate</button>
+      <span class="js-p-id-class-<%=recipe[i]._id%>">
+
+      <%for (var j = 0; j < recipe[i].ingredient.length; j++) {%>
+        <p><%= recipe[i].ingredient[j].ingredient_name %> 
+        <%=recipe[i].ingredient[j].weight %>
+        <%=recipe[i].ingredient[j].weight_unit %></p>
+      <% } %>
+    </span>
+
+
+    </li>
+ <% } %>
+</ul>
+
+<%- include('partials/footer'); -%>
+
+<script>
+  const amountButtons = document.querySelectorAll('.amountButton');
+  const deleteButton = document.querySelectorAll('.js-delete-button');
+  /* Step required to use recipe ejs object in JS after the connection with the server has been terminated */
+  const recipe = <%- JSON.stringify(recipe) %>; 
+  
+  deleteButton.forEach((button) => {
+    button.addEventListener('click', (e) => {
+      console.log('clicked delete button')
+      // The id of the bread the user wants to delete 
+      const id = button.dataset.doc; 
+      // HTML section of the recipe the user want to delete
+      const section = document.querySelector(`.id-class-${id}`); 
+
+      fetch(`/smoothies/${id}`, {
+        method: 'DELETE',
+      })
+      .then(
+        section.style.visibility = 'hidden'
+      )
+      .catch(err => console.log(err));
+    })
+  })
+
+  amountButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      try {
+        // The id of the bread the user wants to manipulate 
+        const id = button.dataset.id; 
+        // Getting the number of bread the user wants to make
+        const amount = document.getElementById(`${id}`).value; 
+        let recipeObject = null;
+
+        // For loop to find the recipe the user has chosen
+        for (var i = 0; i < recipe.length; i++) {
+          if (recipe[i]._id === id){
+            recipeObject = recipe[i];
+          }
+        }
+        const pSection = document.querySelector(`.js-p-id-class-${id}`);
+        pSection.innerHTML = '';
+        let weight = null;
+
+
+        for (var j = 0; j < recipeObject.ingredient.length; j++) {
+          weight = amount * recipeObject.ingredient[j].weight
+          pSection.innerHTML += `<p> ${recipeObject.ingredient[j].ingredient_name} ${weight} ${recipeObject.ingredient[j].weight_unit} </p>`
+        };
+
+      } catch (err) {
+        console.error("Error while processing amount calculation:", err);
+      }
+    });
+  });
+
+</script>

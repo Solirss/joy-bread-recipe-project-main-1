@@ -1,0 +1,147 @@
+<%- include('partials/header'); -%>
+
+
+<header>
+  <div class="create-recipe content">
+    <form action="/recipe" method="POST">
+      <!-- Recipe Name -->
+      <label class="recipe-name-label" for="recipe_name">Recipe Name</label>
+      <input class="recipe-input" type="text" id="recipe_name" name="recipe_name" required>
+
+      <!-- Ingredients Section -->
+      <div id="ingredients-container">
+        <!-- Initial Ingredient Group -->
+        <div class="ingredient-group">
+          <h4>Ingredient 1</h4>
+          <label class="ingredient-css" for="ingredient_name">Ingredient Name:</label>
+          <input type="text" name="ingredient_name[]" required>
+
+          <label class="ingredient-css" for="weight_unit">Weight Unit:</label>
+          <input type="text" name="weight_unit[]" required>
+
+          <label class="ingredient-css" for="weight">Weight:</label>
+          <input type="number" name="weight[]" required>
+
+          <!-- Remove Button for the First Ingredient (Hidden by Default) -->
+          <button type="button" class="remove-ingredient-button" style="display: none;">X</button>
+        </div>
+      </div>
+
+      <!-- Add Ingredient Button -->
+      <button type="button" id="add-ingredient-button">Add Ingredient</button>
+
+      <!-- Submit Button -->
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <!-- JavaScript for Dynamic Ingredients -->
+  <script>
+    const ingredientsContainer = document.getElementById("ingredients-container");
+    const addIngredientButton = document.getElementById("add-ingredient-button");
+
+    let ingredientCount = 1; // Tracks the number of ingredient blocks
+
+    // Function to add a new ingredient block
+    addIngredientButton.addEventListener("click", () => {
+      ingredientCount++;
+      const ingredientGroup = document.createElement("div");
+      ingredientGroup.classList.add("ingredient-group");
+
+      ingredientGroup.innerHTML = `
+        <h4>Ingredient ${ingredientCount}</h4>
+        <label for="ingredient_name">Ingredient Name:</label>
+        <input type="text" name="ingredient_name[]" required>
+
+        <label for="weight_unit">Weight Unit:</label>
+        <input type="text" name="weight_unit[]" required>
+
+        <label for="weight">Weight:</label>
+        <input type="number" name="weight[]" required>
+
+        <button type="button" class="remove-ingredient-button">X</button>
+      `;
+
+      ingredientsContainer.appendChild(ingredientGroup);
+
+      // Add event listener to the new Remove button
+      const removeButton = ingredientGroup.querySelector(".remove-ingredient-button");
+      removeButton.addEventListener("click", () => {
+        ingredientGroup.remove();
+        updateIngredientNumbers();
+      });
+    });
+
+    // Function to update ingredient numbers after deletion
+    function updateIngredientNumbers() {
+      const ingredientGroups = document.querySelectorAll(".ingredient-group");
+      ingredientCount = ingredientGroups.length;
+      ingredientGroups.forEach((group, index) => {
+        const heading = group.querySelector("h4");
+        heading.textContent = `Ingredient ${index + 1}`;
+      });
+    }
+
+    // Ensure the first "Remove" button is hidden
+    document.querySelector(".remove-ingredient-button").style.display = "none";
+  </script>
+
+  <!-- CSS for Styling -->
+  <style>
+    .recipe-input {
+      margin-bottom:1em;
+    }
+
+    .recipe-name-label {
+      font-weight: bold;
+      font-size: 30px;
+    }
+
+    .ingredient-css {
+      font-size: 15px;
+    }
+
+    .ingredient-group {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      position: relative;
+    }
+
+    .remove-ingredient-button {
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      padding: 5px 10px;
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    .remove-ingredient-button:hover {
+      background-color: #cc0000;
+    }
+
+    #add-ingredient-button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #add-ingredient-button:hover {
+      background-color: #45a049;
+    }
+
+    
+  </style>
+</header>
+
+
+<%- include('partials/footer'); -%>
