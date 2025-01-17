@@ -7,7 +7,6 @@ const { requireAuth, checkUser } = require('./middleware/authMiddleware.js');
 const Recipe = require('./models/recipe.js');
 
 
-
 const app = express();
 
 // middleware
@@ -20,11 +19,15 @@ app.use(cookieParser());
 // view engine
 app.set('view engine', 'ejs');
 
+mongoose.set('debug', true);
+
 // database connection
-const dbURI = 'mongodb+srv://Joy-bread:13888147114@cluster0.aza85.mongodb.net/Joy-bread';
-mongoose.connect(dbURI)
-  .then((result) => app.listen(80))
-  .catch((err) => console.log(err));
+const dbURI = 'mongodb+srv://Joy-bread:13888147114@cluster0.aza85.mongodb.net/Joy-bread';mongoose.connect(dbURI)
+  .then(() => {
+    console.log('Connected to MongoDB');
+    app.listen(3000, () => console.log('Server running on port 3000'));
+  })
+  .catch(err => console.log('MongoDB connection error:', err));
 
 // routes
 app.get('*', checkUser);

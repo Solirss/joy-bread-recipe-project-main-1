@@ -69,7 +69,11 @@
 
 
         for (var j = 0; j < recipeObject.ingredient.length; j++) {
-          weight = amount * recipeObject.ingredient[j].weight
+          let jsWeightObject = (recipeObject.ingredient[j].weight);
+          let currentWeight = jsWeightObject.$numberDecimal;
+          let intAmount = parseFloat(amount);
+          weight = intAmount * currentWeight;
+          console.log(weight);
           pSection.innerHTML += `<p> ${recipeObject.ingredient[j].ingredient_name} ${weight} ${recipeObject.ingredient[j].weight_unit} </p>`
         };
 

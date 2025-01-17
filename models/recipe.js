@@ -13,8 +13,8 @@ const ingredientSchema = new Schema({
     unique: false
   },
   weight: {
-    type: Number,
-    min: [0, 'Weight must be a positive number'],
+    type: mongoose.Types.Decimal128,
+    min: [0.0, 'Weight must be a positive number'],
     required: [true, 'Weight is required'],
   }
 });
