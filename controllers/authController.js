@@ -1,6 +1,7 @@
 const User = require('../models/user.js');
 const jwt = require('jsonwebtoken');
 
+
 //handle errors
 const handleErrors = (err) => {
   console.log(err.message, err.code);
